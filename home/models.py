@@ -16,9 +16,9 @@ class User(models.Model):
 
 
 class Appointment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     time = models.CharField(max_length=100)
     description = models.CharField(max_length=400)
+    app_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         string = "Time: " + self.time + "\nDesc: " + self.description
