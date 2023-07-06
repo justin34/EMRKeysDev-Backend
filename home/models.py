@@ -16,7 +16,9 @@ class User(models.Model):
 
 
 class Appointment(models.Model):
-    time = models.CharField(max_length=100)
+    title = models.CharField(max_length=50)
+    startTime = models.CharField(max_length=100)
+    endTime = models.CharField(max_length=100)
     description = models.CharField(max_length=400)
     app_user = models.ForeignKey(User, on_delete=models.CASCADE)
 

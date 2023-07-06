@@ -22,8 +22,10 @@ class ReactApiView(APIView):
         output = [{'username': user.userName,
                    'email': user.email,
                    'password': user.password,
-                   'appointments': [{'time': appointment.time,
-                                     'description': appointment.description
+                   'appointments': [{'id': appointment.id,
+                                     'title': appointment.title,
+                                     'start': appointment.startTime,
+                                     'end': appointment.endTime,
                                      }for appointment in user.appointment_set.all()
                                     ]}for user in User.objects.all()]
         return Response(output)
