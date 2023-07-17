@@ -59,6 +59,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny']
 }
 
+DATETIME_FORMAT = "%Y-%m-%d%H:%M:%S"
+
+L10N = False
+
+USE_TZ = False
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'EMRDjango.urls'

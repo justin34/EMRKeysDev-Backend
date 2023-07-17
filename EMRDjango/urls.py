@@ -20,5 +20,9 @@ from home.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', ReactApiView.as_view(), name='anything')
+    path('', ReactApiView.as_view(), name='anything'),
+    path("patients/", AllPatientApiView.as_view(), name="Patients"),
+    path("users/<int:userId>/appointments", AppointmentsApiView.as_view(), name="Appointments"),
+    path("users/<int:userId>/patients", UserPatientApiView.as_view(), name="User_Patients"),
+    path("users/", UsersApiView.as_view(), name="users")
 ]
