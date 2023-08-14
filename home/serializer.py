@@ -30,15 +30,15 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class PatientSerializer(serializers.ModelSerializer):
-    userIds = UserSerializer(many=True)
+    #users = UserSerializer(many=True)
 
     class Meta:
         model = Patient
-        fields = ["name", "DOB", "notes", 'userId_set']
+        fields = ["name", "DOB", "notes", 'profile_picture']
 
     def create(self, validated_data):
-        userId_set = validated_data.pop('userId_set')
+        user_set = validated_data.pop('users')
 
         patient = Patient.objects.create(**validated_data)
-        for userId in userId_set:
-            patient.users.add(User.objects.get(id=userId))
+        for user in user_set:
+            patient.users.add(user)

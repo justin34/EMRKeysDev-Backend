@@ -18,11 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from home.views import *
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ReactApiView.as_view(), name='anything'),
-    path("patients/", AllPatientApiView.as_view(), name="Patients"),
+    path("patients/<int:patientId>", PatientApiView.as_view(), name="Patients"),
     path("users/<int:userId>/appointments", AppointmentsApiView.as_view(), name="Appointments"),
     path("users/<int:userId>/patients", UserPatientApiView.as_view(), name="User_Patients"),
     path("users/", UsersApiView.as_view(), name="users")
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

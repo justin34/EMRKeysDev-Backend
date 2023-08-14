@@ -2,6 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
+from django.conf import settings
+
 from .models import *
 from .serializer import *
 from rest_framework.response import Response
@@ -9,9 +12,9 @@ from rest_framework.response import Response
 import os
 import openai
 
-openai.organization = "org-M7wl4qY9529vkapHZH1fDelQ"
-openai.api_key = "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"
-openai.Model.list()
+#openai.organization = "org-M7wl4qY9529vkapHZH1fDelQ"
+#openai.api_key = "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"
+#openai.Model.list()
 
 
 # Create your views here.
@@ -50,23 +53,32 @@ class AppointmentsApiView(APIView):
             serializer.save()
             return Response(serializer.data)
 
-class AllPatientApiView(APIView):
-    def get(self, request):
-        output = [{
+class PatientApiView(APIView):
+    def get(self, request, patientId):
+        patient = Patient.objects.get(id=patientId)
+        output = {
             'id': patient.id,
             'name': patient.name,
             'DOB': patient.DOB,
             'notes': patient.notes,
-        }for patient in Patient.objects.all()]
+            'profile_picture': patient.profile_picture.url
+        }
         return Response(output)
+    def post(self, request):
+        serializer = PatientSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
 
 class UserPatientApiView(APIView):
+
     def get(self, request, userId):
         output = [{
             'id': patient.id,
             'name': patient.name,
             'DOB': patient.DOB,
             'notes': patient.notes,
+            'profile_picture': patient.profile_picture.url,
         }for patient in User.objects.get(id=userId).patient_set.all()]
         return Response(output)
 

@@ -31,4 +31,5 @@ class Patient(models.Model):
     name = models.CharField(max_length=100)
     DOB = models.DateField()
     notes = models.CharField(max_length=5000)
-    #profile_picture = models.ImageField()
+    profile_picture = models.ImageField(upload_to="profilePictures/", default="/media/profilePictures/DefaultProfilePic.png")
+

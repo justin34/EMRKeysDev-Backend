@@ -63,6 +63,9 @@ DATETIME_FORMAT = "%Y-%m-%d%H:%M:%S"
 
 L10N = False
 
+MEDIA_ROOT = BASE_DIR / "media/"
+MEDIA_URL = '/media/'
+
 USE_TZ = False
 
 CORS_ORIGIN_ALLOW_ALL = True
