@@ -26,10 +26,32 @@ class Appointment(models.Model):
         string = "Time: " + str(self.startTime) + "\nTitle: " + self.title
         return string
 
+
+class Symptom(models.Model):
+    symptom = models.CharField(max_length=100)
+    severity_in_choices = [('mild', 'Mild'), ('moderate', 'Moderate'), ("moderate to severe", "Moderate to Severe"),('severe', 'Severe')]
+    severity = models.CharField(max_length=20, choices=severity_in_choices, default='mild')
+
+
+def upload_path(instance, filename):
+    return '/'.join(['profilePictures', filename])
+
+
 class Patient(models.Model):
     users = models.ManyToManyField(User)
     name = models.CharField(max_length=100)
     DOB = models.DateField()
     notes = models.CharField(max_length=5000)
-    profile_picture = models.ImageField(upload_to="profilePictures/", default="/media/profilePictures/DefaultProfilePic.png")
+    profile_picture = models.ImageField(upload_to=upload_path, default="/profilePictures/DefaultProfilePic.png")
+
+
+class AINote(models.Model):
+    symptoms = models.ManyToManyField(Symptom, null=True)
+    note = models.CharField(max_length=10000, null=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+
+class TempImages(models.Model):
+    image = models.ImageField(upload_to="temp/")
+
+
 

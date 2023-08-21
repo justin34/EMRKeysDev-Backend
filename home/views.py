@@ -54,6 +54,7 @@ class AppointmentsApiView(APIView):
             return Response(serializer.data)
 
 class PatientApiView(APIView):
+
     def get(self, request, patientId):
         patient = Patient.objects.get(id=patientId)
         output = {
@@ -61,14 +62,19 @@ class PatientApiView(APIView):
             'name': patient.name,
             'DOB': patient.DOB,
             'notes': patient.notes,
-            'profile_picture': patient.profile_picture.url
+            'profile_picture': patient.profile_picture.url,
+            'users': [{'id': user.id,
+                       'username': user.userName
+                       }for user in patient.users.all()]
         }
         return Response(output)
-    def post(self, request):
-        serializer = PatientSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
+
+    def post(self, request, patientId):
+        patient = Patient.objects.get(id=patientId)
+        form = PatientUpdate(request.POST, instance=patient)
+        form.save()
+        return Response(form.data)
+
 
 class UserPatientApiView(APIView):
 
@@ -98,6 +104,31 @@ class ReactApiView(APIView):
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+class TempImage(ModelViewSet):
+    queryset = TempImages.objects.all()
+    serializer_class = ImageSerializer
+
+
+class AINote(APIView):
+    def get(self, request, patientId):
+        output = [{"note": ainote.note} for ainote in Patient.objects.get(id=patientId).ainote_set.all()]
+        return Response(output)
+
+    def post(self, request, patientId):
+        data = request.data
+        data['patient'] = patientId
+        symptomsDict = data['symptoms']
+        symptoms = []
+        for symptom in symptomsDict:
+            symptomObj = Symptom.objects.create(symptom=symptom['symptom'], severity=symptom['severity'])
+            symptoms.append(symptomObj.id)
+
+        data['symptoms'] = symptoms
+        serializer = AINoteSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)

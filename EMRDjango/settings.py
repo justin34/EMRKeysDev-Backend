@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import rest_framework
+import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +27,14 @@ SECRET_KEY = 'django-insecure-p*f(j#ukor)w&lytd&k-l#qv=+0=&hi01a#@fo$bsp^t843*o$
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+keysfile = BASE_DIR / 'EMRDjango/keys.json'
+with open(keysfile) as f:
+    KEYS = json.load(f)
+keys = lambda n: str(KEYS[n])
+
+OPENAI_KEY = keys('openai_key')
+
 
 ALLOWED_HOSTS = []
 
@@ -68,7 +77,13 @@ MEDIA_URL = '/media/'
 
 USE_TZ = False
 
-CORS_ORIGIN_ALLOW_ALL = True
+
+
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000"
+]
 
 ROOT_URLCONF = 'EMRDjango.urls'
 TEMPLATES = [
