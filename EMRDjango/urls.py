@@ -29,5 +29,6 @@ urlpatterns = [
     path("users/<int:userId>/patients", UserPatientApiView.as_view(), name="User_Patients"),
     path("users/", UsersApiView.as_view(), name="users"),
     path("images/", TempImage.as_view({'get': 'list'})),
-    path('ainotes/<int:patientId>', AINote.as_view(), name='AiNotes')
+    path('ainotes/<int:patientId>', AINote.as_view(), name='AiNotes'),
+    path("symptomList/", SympyomList.as_view(), name='Symptoms')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

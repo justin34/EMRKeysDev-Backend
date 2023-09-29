@@ -12,9 +12,10 @@ from rest_framework.response import Response
 import os
 import openai
 
-#openai.organization = "org-M7wl4qY9529vkapHZH1fDelQ"
-#openai.api_key = "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"
-#openai.Model.list()
+
+# openai.organization = "org-M7wl4qY9529vkapHZH1fDelQ"
+# openai.api_key = "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"
+# openai.Model.list()
 
 
 # Create your views here.
@@ -53,6 +54,7 @@ class AppointmentsApiView(APIView):
             serializer.save()
             return Response(serializer.data)
 
+
 class PatientApiView(APIView):
 
     def get(self, request, patientId):
@@ -65,7 +67,7 @@ class PatientApiView(APIView):
             'profile_picture': patient.profile_picture.url,
             'users': [{'id': user.id,
                        'username': user.userName
-                       }for user in patient.users.all()]
+                       } for user in patient.users.all()]
         }
         return Response(output)
 
@@ -85,7 +87,7 @@ class UserPatientApiView(APIView):
             'DOB': patient.DOB,
             'notes': patient.notes,
             'profile_picture': patient.profile_picture.url,
-        }for patient in User.objects.get(id=userId).patient_set.all()]
+        } for patient in User.objects.get(id=userId).patient_set.all()]
         return Response(output)
 
 
@@ -108,6 +110,7 @@ class ReactApiView(APIView):
             serializer.save()
             return Response(serializer.data)
 
+
 class TempImage(ModelViewSet):
     queryset = TempImages.objects.all()
     serializer_class = ImageSerializer
@@ -124,11 +127,24 @@ class AINote(APIView):
         symptomsDict = data['symptoms']
         symptoms = []
         for symptom in symptomsDict:
-            symptomObj = Symptom.objects.create(symptom=symptom['symptom'], severity=symptom['severity'])
-            symptoms.append(symptomObj.id)
+            symptomObj = None
+            try:
+                symptomObj = Symptom.objects.get(symptom=symptom["symptom"], severity=symptom["severity"])
+            except:
+                symptomObj = Symptom.objects.create(symptom=symptom['symptom'], severity=symptom['severity'])
+            finally:
+                symptoms.append(symptomObj.id)
 
         data['symptoms'] = symptoms
         serializer = AINoteSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
+
+
+class SympyomList(APIView):
+    def get(self, request):
+        output = [symptom.symptom.lower() for symptom in Symptom.objects.all()]
+        output = sorted(set(output))
+
+        return Response(output)

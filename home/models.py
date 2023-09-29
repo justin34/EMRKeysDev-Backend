@@ -53,5 +53,3 @@ class AINote(models.Model):
 class TempImages(models.Model):
     image = models.ImageField(upload_to="temp/")
 
-
-

@@ -58,7 +58,7 @@ class AINoteSerializer(serializers.ModelSerializer):
         fields = ['symptoms', 'patient']
 
     def create(self, validated_data):
-        prompt = "Write a short doctors note summarizing the folowing symptoms do not include the date or the reasons" \
+        prompt = "Write a short doctors note summerizing the following symptoms in complete sentences. Do not include the date or the reasons. Do not addtess it to anyone" \
                  " for the symptoms:\n"
         patient = validated_data['patient']
         symptoms = validated_data.pop('symptoms')
@@ -84,7 +84,7 @@ class AINoteSerializer(serializers.ModelSerializer):
 class PatientUpdate(forms.ModelForm):
     class Meta:
         model = Patient
-        fields = ['name', 'DOB', 'profile_picture']
+        fields = ['name', 'DOB', 'notes','profile_picture']
 
 
 class ImageSerializer(serializers.ModelSerializer):
